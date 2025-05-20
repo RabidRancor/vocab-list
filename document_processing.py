@@ -108,3 +108,10 @@ def list_to_json(vocablist: list, filename: str = 'vocab.json'):
 
 
 
+
+
+
+def json_to_list(filename: str = 'vocab.json'):
+
+    with open(filename, 'r', encoding = 'utf-8') as f:
+        return json.load(f)
