@@ -1,6 +1,10 @@
+'''Module containing class definitions for Word and VocabList'''
+
+
+
 class Word:
 
-    '''stores the name and examples for a word as parsed from a docx file'''
+    '''Stores the name and examples for a word'''
 
 
     def __init__(self, name: str):
@@ -14,9 +18,33 @@ class Word:
         return self.__name
     
 
+
     @property
     def examples(self):
         return self.__examples
+
+
+
+    #allows one to directly convert a dictionary into a Word object
+    #useful for converting json to VocabList
+    @classmethod
+    def from_dict(cls, orig: dict):
+        
+        #create a Word objet with name attribute from the dictionary
+        word = cls(orig["word"])
+
+        #get accesses the contents for a given key
+        #the second parameter is the fallback output
+
+        #we use add_example rather than directly exposing the examples attribute
+        #so you can create a word without examples
+
+        for example in orig.get("examples", []):
+            word.add_example(example)
+
+
+        return word
+
 
 
 
@@ -27,9 +55,9 @@ class Word:
 
     
 
-    def __str__(self):
-        return f'{self.__name.upper()}:\n{"\n".join(self.__examples)}'
 
+    def __str__(self):
+        return f'{self.__name.upper()}:\n- {"\n- ".join(self.__examples)}'
 
 
 
@@ -122,28 +150,3 @@ class VocabList:
 
 
 
-
-
-if __name__ == "__main__":
-
-    nothing = Word('nothing')
-
-    nothing.add_example('what a bloody good time')
-    nothing.add_example('test2')
-
-
-
-    blah = Word('blah')
-
-    blah.add_example('idk waht')
-    blah.add_example('things')
-
-
-    yo = Word('yo')
-
-    yo.add_example('ya boi')
-
-
-
-    alist = VocabList([nothing, blah, yo])
-    print(alist.search_for_word('blah'))

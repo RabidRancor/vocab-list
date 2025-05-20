@@ -1,9 +1,13 @@
-from docx import Document
+'''
+Module designed for document processing such as:
+ - converting from docx to internal VocabList object
+ - converting from internal VocabList object to json output
+ - converting from json to internal VocabList object
+'''
+
+import docx
 import json
 from wordclass import Word, VocabList
-
-
-
 
 
 
@@ -18,7 +22,7 @@ def word_to_list(files: list):
 
 
         #our file read object
-        doc = Document(file)
+        doc = docx.Document(file)
 
 
         current_word = ""
@@ -103,6 +107,7 @@ def word_to_list(files: list):
 
 
 
+
 def list_to_json(vocablist: VocabList, filename: str = 'vocab.json'):
 
     '''creates a json file populated with contents from current VocabList object'''
@@ -127,7 +132,13 @@ def list_to_json(vocablist: VocabList, filename: str = 'vocab.json'):
 
 
 
+
 def json_to_list(filename: str = 'vocab.json'):
 
+    '''converts json contents to a VocabList object'''
+
+
     with open(filename, 'r', encoding = 'utf-8') as f:
-        return json.load(f)
+        json_contents = json.load(f)
+
+    return VocabList([Word.from_dict(word_dict) for word_dict in json_contents ])
