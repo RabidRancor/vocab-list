@@ -108,14 +108,3 @@ def list_to_json(vocablist: list, filename: str = 'vocab.json'):
 
 
 
-
-
-
-if __name__ == '__main__':
-    
-    files = []
-    while (userchoice := input("Add .docx files to convert to .json (blank to stop inputting): ")):
-        files.append(userchoice)
-    
-
-    list_to_json(word_to_list(files))
