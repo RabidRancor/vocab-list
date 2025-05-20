@@ -3,6 +3,9 @@ import json
 
 
 
+
+
+
 def word_to_list(files: list):
 
     '''Extracts content from arbitrary amount of docx files and converts it to a list of dictionaries'''
