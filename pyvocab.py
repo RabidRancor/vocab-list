@@ -5,7 +5,7 @@ def help():
 
     commands = ['Commands:', '(0) exit', '(1) help' ,'(2) read from docx', 
                 '(3) read from json', '(4) search by word', '(5) show current vocab list', 
-                '(6) create json from current vocab list']
+                '(6) add a word to the list', '(7) create json from current vocab list']
 
     for line in commands:
         print(line)
@@ -41,6 +41,7 @@ def program():
             pass
         else:
             command = int(command)
+            print()
 
 
 
@@ -117,8 +118,33 @@ def program():
 
 
 
-        #generate a json from the selected list
+        #add a word to the list
         elif command == 6:
+
+            if not vocabulary:
+                print('No vocab list to append')
+                continue
+
+
+            what_word = input("Word to add: ")
+            
+            if what_word.strip():
+                worked = vocabulary.add_word(what_word)
+            else:
+                print('empty field')
+                continue
+
+            #check if word was successfully added (case insensitive)
+            if worked:
+                print(f'Successfully added {what_word} to list')
+            else:
+                print(f'Word already in list')
+
+
+
+
+        #generate a json from the selected list
+        elif command == 7:
 
 
             #if the vocab list is None/empty
@@ -138,6 +164,7 @@ def program():
 
             else:
                 print('Empty file name')
+
 
 
 

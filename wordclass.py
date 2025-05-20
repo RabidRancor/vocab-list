@@ -93,11 +93,13 @@ class VocabList:
         '''add a Word object to the VocabList'''
 
         #if word is not a duplicate
-        if new_word not in [word.name for word in self.__vocablist]:
+        # case insensitive
+        if new_word.lower() not in [word.name.lower() for word in self.__vocablist]:
             self.__vocablist.append(Word(new_word))
+            return True
 
         else:
-            print('Word already in record')
+            return False
     
 
 
