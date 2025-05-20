@@ -1,5 +1,6 @@
 from docx import Document
 import json
+from wordclass import Word, VocabList
 
 
 
@@ -38,7 +39,7 @@ def word_to_list(files: list):
 
 
             #check the runs in this paragraph for any evidence of bolding
-            #bold is a boolean flag
+            #bold is a Boolean flag
             #if it detects any bolded runs, it outputs a True
 
 
@@ -53,14 +54,17 @@ def word_to_list(files: list):
                 #if the current line is a bold one
                 #and there is a value already in current_word
                 #then that means you're onto the next word and should upload
-                #the previous word and examples to the list
+                #the previous word and examples to the list as Word objects
 
                 #this is only triggered when you reach the second word and onwards
 
                 if current_word:
 
-                    finaloutput.append({'word': current_word, 'examples': current_examples})
-
+                    word_to_add = Word(current_word)
+                    for example in current_examples:
+                        word_to_add.add_example(example)
+                    
+                    finaloutput.append(word_to_add)
                 
 
                 #currentword is set whenever a bold paragraph is detected
@@ -85,8 +89,13 @@ def word_to_list(files: list):
         #so the for loop will end but current_word and current_examples retain their contents
         #since they're global variables
 
+        if current_word:
+            word_to_add = Word(current_word)
+            for example in current_examples:
+                word_to_add.add_example(example)
+            
+            finaloutput.append(word_to_add)
 
-        finaloutput.append({'word': current_word, 'examples': current_examples})
 
     return finaloutput
 
@@ -94,9 +103,9 @@ def word_to_list(files: list):
 
 
 
-def list_to_json(vocablist: list, filename: str = 'vocab.json'):
+def list_to_json(vocablist: VocabList, filename: str = 'vocab.json'):
 
-    '''creates a json file populated with contents of a list of dictionaries'''
+    '''creates a json file populated with contents from current VocabList object'''
 
 
     #utf-8 is cross compatible
@@ -104,10 +113,14 @@ def list_to_json(vocablist: list, filename: str = 'vocab.json'):
     with open(filename, 'w', encoding = 'utf-8') as j:
 
 
-        #ensure_ascii can help with accented or special unicode characters
-        #indentation used so the .json file is readable
+        def word_to_dict(word: Word):
+            return {'word': word.name, 'examples': word.examples}
 
-        json.dump(vocablist, j, ensure_ascii = False, indent = 2)
+
+        #ensure_ascii off can allow accented or special unicode characters
+        #indentation used so the .json file is human-readable
+
+        json.dump([word_to_dict(entry) for entry in vocablist], j, ensure_ascii = False, indent = 2)
 
 
 

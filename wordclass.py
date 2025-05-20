@@ -12,10 +12,17 @@ class Word:
     @property
     def name(self):
         return self.__name
+    
+
+    @property
+    def examples(self):
+        return self.__examples
 
 
 
     def add_example(self, example: str):
+        '''add an example to Word object'''
+        
         self.__examples.append(example)
 
     
@@ -39,15 +46,23 @@ class VocabList:
     
 
 
+    #allows one to sort through a VocabList like a regular list
+    def __iter__(self):
+        return iter(self.__vocablist)
+
+
 
     def __str__(self):
         
-        return '\n\n'.join(str(word) for word in self.__vocablist)
+        body = '\n\n\n'.join(str(word) for word in self.__vocablist)
+        count = len(self.__vocablist)
+        return f"{body}\n\n\n-----\nWords: {count}"
 
 
 
 
     def add_word(self, new_word: str):
+        '''add a Word object to the VocabList'''
 
         #if word is not a duplicate
         if new_word not in [word.name for word in self.__vocablist]:
@@ -60,6 +75,7 @@ class VocabList:
 
 
     def add_example(self, word_name: str, new_example: str):
+        '''add an example to the Word object with matching name'''
 
         for word in self.__vocablist:
             if word.name.lower() == word_name.lower():
@@ -75,6 +91,7 @@ class VocabList:
     #returns the entry for the word you search
 
     def search_for_word(self, which_word: str):
+        '''search for word (case insensitive) and return its contents'''
 
         #if a match exists
         if (match := list(filter(lambda word: word.name.lower() == which_word.lower(), self.__vocablist))):
@@ -90,7 +107,7 @@ class VocabList:
     #deletes word from list
 
     def delete_word(self, word2del: str):
-
+        '''delete word (case insensitive) from VocabList'''
 
         #word is object of class Word
 
