@@ -1,5 +1,5 @@
 from docx import Document
-import json
+from json import dump
 
 
 
@@ -90,8 +90,24 @@ def word_to_list(filename: str):
 
 
 
+def list_to_json(vocablist: list, outputfile: str = 'vocab.json'):
+
+    #utf-8 is cross compatible
+
+    with open(outputfile, 'w', encoding = 'utf-8') as j:
+
+
+        #ensure ascii can help with accented or special unicode characters
+        #indentation used so the .json file is readable
+
+        dump(vocablist, j, ensure_ascii = False, indent = 2)
+
+
+
+
+
+
 if __name__ == '__main__':
     filename = input('Which file to access: ')
     
-    for word in word_to_list(filename):
-        print(word)
+    list_to_json(word_to_list(filename))
