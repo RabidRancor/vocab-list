@@ -57,7 +57,8 @@ class Word:
 
 
     def __str__(self):
-        return f'{self.__name.upper()}:\n- {"\n- ".join(self.__examples)}'
+        examples = "\n- ".join(self.__examples)
+        return f'{self.__name.upper()}:\n- {examples}'
 
 
 
