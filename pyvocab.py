@@ -1,6 +1,73 @@
+'''Contains frontend program for creating or editing a list or uploading to json
+   Can also be used as module for getting a VocabList object from json or docx input'''
+
+
+
 from docproc import word_to_list, list_to_json, json_to_list
 from wordclass import Word, VocabList
 import os
+
+
+
+
+
+def read_from_json():
+
+    '''reads from json to VocabList;  returns object if file exists, none if it does not'''
+
+    selection = input('Which .json file do you want to draw from? ')
+
+
+    #if user forgot the .json extension
+    if not selection.endswith('.json'):
+        selection += '.json'
+
+
+    #only read from files that exist
+    if os.path.exists(selection):
+
+        #vocablist is the VocabList object we create from the json file
+        vocablist = json_to_list(selection)
+        print('List generated from', selection)
+        return vocablist
+
+
+    print("File does not exist")
+
+
+
+
+def read_from_docx():
+
+    '''reads from docx to VocabList;  returns object if file(s) exist, none of it does not'''
+
+    files = []
+
+    while (docxfile := input("Add .docx files to parse (blank to stop inputting): ")):
+
+        #if user forgot the .docx extension
+        if not docxfile.endswith('.docx'):
+            docxfile += '.docx'
+
+
+        #if user input is valid
+        if os.path.exists(docxfile):
+            files.append(docxfile)
+            print(docxfile, 'successfully inputted')
+
+
+        #if user input is invalid
+        else:
+            print('File does not exist')
+
+
+    #if the field is not empty
+    if files:
+        vocabulary = VocabList(word_to_list(files)) 
+        return vocabulary 
+
+          
+
 
 
 
@@ -21,9 +88,10 @@ def help():
 
 
 
+
 def program():
 
-    '''main frontend interface for accessing vocab lists'''
+    '''Main frontend interface for editing VocabList objects'''
 
 
 
@@ -61,21 +129,10 @@ def program():
         #read from json file to VocabList object
         elif command == 2:
 
-            selection = input('Which .json file do you want to draw from? ')
+            #ensure misinput or empty input doesnt clear list
+            if (new_vocabulary_maybe := read_from_json()):
 
-
-            #if user forgot the .json extension
-            if not selection.endswith('.json'):
-                selection += '.json'
-
-
-            #only read from files that exist
-            if os.path.exists(selection):
-                vocabulary = json_to_list(selection)
-                print('List generated from', selection)
-
-            else:
-                print("File does not exist")
+                vocabulary = new_vocabulary_maybe
 
 
 
@@ -84,28 +141,10 @@ def program():
         #read from docx file(s) to a VocabList object
         elif command == 3:
 
-            files = []
+            #ensure misinput or empty input doesnt clear list
+            if (new_vocabulary_maybe := read_from_docx()):
 
-            while (docxfile := input("Add .docx files to parse (blank to stop inputting): ")):
-
-                #if user forgot the .docx extension
-                if not docxfile.endswith('.docx'):
-                    docxfile += '.docx'
-
-
-                #if user input is valid
-                if os.path.exists(docxfile):
-                    files.append(docxfile)
-                    print(docxfile, 'successfully inputted')
-
-
-                #if user input is invalid
-                else:
-                    print('File does not exist')
-
-
-            if files:
-                vocabulary = VocabList(word_to_list(files))        
+                vocabulary = new_vocabulary_maybe      
 
 
 
