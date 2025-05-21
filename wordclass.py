@@ -68,10 +68,10 @@ class VocabList:
     '''stores and processes list of Word objects'''
 
 
-
     def __init__(self, vocablist: list):
         self.__vocablist = vocablist
     
+
 
 
     #allows one to sort through a VocabList like a regular list
@@ -80,6 +80,8 @@ class VocabList:
 
 
 
+
+    #prints the list with big gaps between words
     def __str__(self):
         
         body = '\n\n\n'.join(str(word) for word in self.__vocablist)
@@ -89,17 +91,24 @@ class VocabList:
 
 
 
+
     def add_word(self, new_word: str):
         '''add a Word object to the VocabList'''
 
-        #if word is not a duplicate
-        # case insensitive
-        if new_word.lower() not in [word.name.lower() for word in self.__vocablist]:
-            self.__vocablist.append(Word(new_word))
-            return True
+        #if user inputs blank word
+        if not new_word.strip():
+            return 'Empty field, no word added'
 
-        else:
-            return False
+
+        #if word is not in list already
+        if not self.search_for_word(new_word):
+
+            self.__vocablist.append(Word(new_word))
+            return f'Added {new_word} to list'
+        
+        
+        return 'Word already in list'
+
     
 
 
@@ -107,29 +116,29 @@ class VocabList:
     def add_example(self, word_name: str, new_example: str):
         '''add an example to the Word object with matching name'''
 
-        for word in self.__vocablist:
-            if word.name.lower() == word_name.lower():
-                word.add_example(new_example)
-                return
+        searchword = self.search_for_word(word_name)
+        searchword.add_example(new_example)
+        return f'Example added for {word_name}'
         
 
-        print('word not found')
 
 
 
 
-    #returns the entry for the word you search
+    #returns the reference to the word you searched (if it exists)
+    #handles all the case sensitivity for the VocabList
 
     def search_for_word(self, which_word: str):
-        '''search for word (case insensitive) and return its contents'''
+        '''search for word (case insensitive) in list and return its object'''
 
-        #if a match exists
-        if (match := list(filter(lambda word: word.name.lower() == which_word.lower(), self.__vocablist))):
-            return(str(match[0]))
-        
-        #if a match was not found
-        else:
-            return(f'word not found')
+
+        #uses a generator comprehension to only generate for words where the word matches the input word
+        #if it's not detected, it returns a None
+        #next essentially iterates the generator a single time
+
+        return next((word for word in self.__vocablist if word.name.lower() == which_word.lower()), None)
+
+
 
 
 
@@ -137,16 +146,17 @@ class VocabList:
     #deletes word from list
 
     def delete_word(self, word2del: str):
-        '''delete word (case insensitive) from VocabList'''
+        '''delete word from VocabList'''
 
-        #word is object of class Word
 
-        for word in self.__vocablist:
-            if word.name.lower()  == word2del.lower():
-                self.__vocablist.remove(word)
-                return f'{word2del} deleted from list'
+        if not word2del.strip():
+            return 'Empty field, nothing deleted'
 
-        return "word not found"
+
+        searchword = self.search_for_word(word2del)  
+        self.__vocablist.remove(searchword)
+        return f'{word2del} removed from list'
+
 
 
 
