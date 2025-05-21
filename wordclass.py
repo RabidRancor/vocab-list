@@ -82,12 +82,28 @@ class VocabList:
 
 
 
+    #gets number of words
+    def __len__(self):
+        return len(self.__vocablist)
+
+
+
+
+
+    #apparently makes my list subscriptable
+    #so i cant iterate through it in indexed fashion
+    def __getitem__(self, index):
+        return self.__vocablist[index]
+
+
+
+
     #prints the list with big gaps between words
     def __str__(self):
         
         body = '\n\n\n'.join(str(word) for word in self.__vocablist)
         count = len(self.__vocablist)
-        return f"{body}\n\n\n-----\nWords: {count}"
+        return body
 
 
 

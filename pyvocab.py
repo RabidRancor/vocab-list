@@ -6,6 +6,7 @@
 from docproc import word_to_list, list_to_json, json_to_list
 from wordclass import Word, VocabList
 import os
+from math import ceil
 
 
 
@@ -33,6 +34,7 @@ def read_from_json():
 
 
     print("File does not exist")
+
 
 
 
@@ -78,7 +80,7 @@ def help():
     commands = ['Commands:', '(0) Exit', '(1) Help', '(2) Read from json', 
                 '(3) Read from docx', '(4) Write to json', '(5) Show vocab list', 
                 '(6) Add word', '(7) Add example', '(8) Remove word', 
-                '(9) Search by word'
+                '(9) Search by word', '(10) Empty list'
                 ]
 
     for line in commands:
@@ -180,7 +182,6 @@ def program():
             if json_file_name:
                 list_to_json(vocabulary, json_file_name)
                 print('List written to', json_file_name)
-                break
 
             else:
                 print('Empty file name')
@@ -192,7 +193,82 @@ def program():
         #show the current vocablist and its length
         elif command == 5:
 
-            print(vocabulary)
+
+            if not vocabulary:
+                print('No vocab list')
+                continue
+
+
+            #increment defines the window size
+            #displaylist is the vocablist that gets generate on the fly
+            #only increment elements of it are displayed
+            #last page will have less elements if the listsize isnt divisible by the increment
+
+            i = 0
+            
+            print(f'{len(vocabulary)} words in list')
+
+            if (windowsize := input('How many words to display at a time? ')).isdigit() and int(windowsize) <= len(vocabulary):
+                increment = int(windowsize)
+            else:
+                print('Invalid length')
+                continue
+
+
+
+            maxindex = len(vocabulary) - 1
+            displaylist = vocabulary
+
+
+
+            pagecount = ceil(len(vocabulary)/increment)
+
+
+
+            while True:
+
+
+                pagenumber = (i//increment) + 1
+
+
+                if maxindex-i > increment:
+
+        
+                    #if user is not at bottom window yet, increment by whole increment normally
+
+                    #python slicing of custom class only returns the raw object code
+                    #so i need to pass it as an argument into VocabList to display it properly
+                    #this is similar to if you try to print a generator/iterator
+
+                    print(f'\n{VocabList(displaylist[i:i + increment])}\n')
+                    print(f'Page {pagenumber} of {pagecount}\n')
+                
+
+
+                #if at bottom window and there isn't increment words left to display
+                #only print the remaining words
+
+                else:
+                    print(f'\n{VocabList(displaylist[i:maxindex + 1])}\n')
+                    print(f'Page {pagenumber} of {pagecount}\n')
+
+
+                #technically '' is a substring of 'ws', so i stripped it, and added lower for case insensitivity cuz why not
+
+                if (navigation := input("W and S for scroll, anything else to exit: ")).strip().lower() not in "ws":
+                    break
+
+
+                #if user wants to go down and there is another window to increment to
+                if navigation.lower() == 's' and maxindex - i > increment:
+                    i += increment
+                
+
+                elif navigation.lower() == 'w' and i >= increment:
+                    i -= increment
+
+
+
 
 
 
@@ -282,6 +358,12 @@ def program():
 
 
 
+        #empties list; debugging feature
+        elif command == 10:
+
+            if vocabulary:
+                vocabulary = None
+                print('List cleared')
 
 
 
