@@ -7,7 +7,8 @@ from docproc import word_to_list, list_to_json, json_to_list
 from wordclass import Word, VocabList
 import os
 from math import ceil
-
+import keyboard
+from time import sleep
 
 
 
@@ -210,6 +211,7 @@ def program():
 
             if (windowsize := input('How many words to display at a time? ')).isdigit() and int(windowsize) <= len(vocabulary):
                 increment = int(windowsize)
+                print()
             else:
                 print('Invalid length')
                 continue
@@ -231,44 +233,35 @@ def program():
                 pagenumber = (i//increment) + 1
 
 
-                if maxindex-i > increment:
 
-        
-                    #if user is not at bottom window yet, increment by whole increment normally
-
-                    #python slicing of custom class only returns the raw object code
-                    #so i need to pass it as an argument into VocabList to display it properly
-                    #this is similar to if you try to print a generator/iterator
-
-                    print(f'\n{VocabList(displaylist[i:i + increment])}\n')
-                    print(f'Page {pagenumber} of {pagecount}\n')
+                #the index you stop printing for is either the one at the end of your window 
+                #or the end of the list if you dont have a full window to print
                 
+                end_index = min(i + increment, len(vocabulary))
 
 
-                #if at bottom window and there isn't increment words left to display
-                #only print the remaining words
-
-                else:
-                    print(f'\n{VocabList(displaylist[i:maxindex + 1])}\n')
-                    print(f'Page {pagenumber} of {pagecount}\n')
+                print('=' * 90)
+                print(f'\n{VocabList(displaylist[i:end_index])}\n')
+                print(f'Page {pagenumber} of {pagecount}\n')
 
 
-                #technically '' is a substring of 'ws', so i stripped it, and added lower for case insensitivity cuz why not
 
-                if (navigation := input("W and S for scroll, anything else to exit: ")).strip().lower() not in "ws":
-                    break
+                #technically '' is a substring of any string, so we must strip it out to ignore empty cases
 
+                keyboardpress = keyboard.read_key().strip()
 
-                #if user wants to go down and there is another window to increment to
-                if navigation.lower() == 's' and maxindex - i > increment:
-                    i += increment
-                
-
-                elif navigation.lower() == 'w' and i >= increment:
+                if keyboardpress in ('w', 'up') and i >= increment:
                     i -= increment
 
 
+                #stop scrolling if we cant increment the display window
+                elif keyboardpress in ('s', 'down') and i + increment < len(vocabulary):
+                    i += increment
 
+
+                #we need to debounce the keyboard input
+                #it is registering double presses because it updates too fast
+                sleep(0.1)
 
 
 
@@ -284,6 +277,11 @@ def program():
 
 
             what_word = input("Word to add: ")
+
+            #no empty words
+            if not what_word.strip():
+                print('No empty words')
+                continue
             
 
             print(vocabulary.add_word(what_word))
@@ -368,5 +366,13 @@ def program():
 
 
 
+
 if __name__ == "__main__":
-    program()
+
+
+    #program crashes if one CTRL + C out of the program unless I include an except case
+    try:
+        program()
+
+    except KeyboardInterrupt:
+        print('\nProgram exited through keyboard interrupt')
