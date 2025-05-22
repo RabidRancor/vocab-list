@@ -8,6 +8,7 @@ Module designed for document processing such as:
 import docx
 import json
 from wordclass import Word, VocabList
+import os
 
 
 
@@ -108,6 +109,31 @@ def word_to_list(files: list):
 
 
 
+
+def json_to_list(filename: str = 'vocab.json'):
+
+    '''converts json contents to a VocabList object'''
+
+
+    with open(filename, 'r', encoding = 'utf-8') as f:
+        json_contents = json.load(f)
+
+    return VocabList([Word.from_dict(word_dict) for word_dict in json_contents ])
+
+
+
+
+
+'''dependencies'''
+
+#------------------------------------------------------------------------------------------
+
+'''important module functions'''
+
+
+
+
+
 def list_to_json(vocablist: VocabList, filename: str = 'vocab.json'):
 
     '''creates a json file populated with contents from current VocabList object'''
@@ -132,13 +158,61 @@ def list_to_json(vocablist: VocabList, filename: str = 'vocab.json'):
 
 
 
+def read_from_json():
 
-def json_to_list(filename: str = 'vocab.json'):
-
-    '''converts json contents to a VocabList object'''
+    '''reads from json to VocabList;  returns object if file exists, none if it does not'''
 
 
-    with open(filename, 'r', encoding = 'utf-8') as f:
-        json_contents = json.load(f)
+    selection = input('Which .json file do you want to draw from? ')
 
-    return VocabList([Word.from_dict(word_dict) for word_dict in json_contents ])
+
+    #if user forgot the .json extension
+    if not selection.endswith('.json'):
+        selection += '.json'
+
+
+    #only read from files that exist
+    if os.path.exists(selection):
+
+        #vocablist is the VocabList object we create from the json file
+        vocablist = json_to_list(selection)
+        print('List generated from', selection)
+        return vocablist
+
+
+    print("File does not exist")
+
+
+
+
+
+
+
+def read_from_docx():
+
+    '''reads from docx to VocabList;  returns object if file(s) exist, none of it does not'''
+
+    files = []
+
+    while (docxfile := input("Add .docx files to parse (blank to stop inputting): ")):
+
+        #if user forgot the .docx extension
+        if not docxfile.endswith('.docx'):
+            docxfile += '.docx'
+
+
+        #if user input is valid
+        if os.path.exists(docxfile):
+            files.append(docxfile)
+            print(docxfile, 'successfully inputted')
+
+
+        #if user input is invalid
+        else:
+            print('File does not exist')
+
+
+    #if the field is not empty
+    if files:
+        vocablist = VocabList(word_to_list(files)) 
+        return vocablist 

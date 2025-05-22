@@ -1,76 +1,13 @@
-'''Contains frontend program for creating or editing a list or uploading to json
-   Can also be used as module for getting a VocabList object from json or docx input'''
+'''Contains frontend program for creating or editing a list or uploading to json'''
 
 
 
-from docproc import word_to_list, list_to_json, json_to_list
+from docproc import list_to_json, read_from_docx, read_from_json
 from wordclass import Word, VocabList
 import os
 from math import ceil
 import keyboard
 from time import sleep
-
-
-
-
-def read_from_json():
-
-    '''reads from json to VocabList;  returns object if file exists, none if it does not'''
-
-    selection = input('Which .json file do you want to draw from? ')
-
-
-    #if user forgot the .json extension
-    if not selection.endswith('.json'):
-        selection += '.json'
-
-
-    #only read from files that exist
-    if os.path.exists(selection):
-
-        #vocablist is the VocabList object we create from the json file
-        vocablist = json_to_list(selection)
-        print('List generated from', selection)
-        return vocablist
-
-
-    print("File does not exist")
-
-
-
-
-
-def read_from_docx():
-
-    '''reads from docx to VocabList;  returns object if file(s) exist, none of it does not'''
-
-    files = []
-
-    while (docxfile := input("Add .docx files to parse (blank to stop inputting): ")):
-
-        #if user forgot the .docx extension
-        if not docxfile.endswith('.docx'):
-            docxfile += '.docx'
-
-
-        #if user input is valid
-        if os.path.exists(docxfile):
-            files.append(docxfile)
-            print(docxfile, 'successfully inputted')
-
-
-        #if user input is invalid
-        else:
-            print('File does not exist')
-
-
-    #if the field is not empty
-    if files:
-        vocabulary = VocabList(word_to_list(files)) 
-        return vocabulary 
-
-          
-
 
 
 
@@ -128,7 +65,6 @@ def program():
 
 
 
-
         #read from json file to VocabList object
         elif command == 2:
 
@@ -139,8 +75,6 @@ def program():
 
 
 
-
-
         #read from docx file(s) to a VocabList object
         elif command == 3:
 
@@ -148,8 +82,6 @@ def program():
             if (new_vocabulary_maybe := read_from_docx()):
 
                 vocabulary = new_vocabulary_maybe      
-
-
 
 
 
