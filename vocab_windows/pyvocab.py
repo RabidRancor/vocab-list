@@ -45,10 +45,11 @@ def program():
     while (command := (input('\ncommand: '))) != '0':
         
 
+
         #if user doesnt input an integer, just do nothing
         if not command.isdigit():
             print('Invalid command')
-            pass
+            continue
         else:
             command = int(command)
             print()
@@ -149,6 +150,13 @@ def program():
                 continue
 
 
+            #apparently the keyboard module needs time to clear the buffer
+            #so the enter press after inputting the number of words to display at a time
+            #isn't registered by the scrolling logic
+
+            while keyboard.is_pressed('enter'):
+                sleep(0.05)
+
 
             maxindex = len(vocabulary) - 1
             displaylist = vocabulary
@@ -175,12 +183,28 @@ def program():
                 print('=' * 90)
                 print(f'\n{VocabList(displaylist[i:end_index])}\n')
                 print(f'Page {pagenumber} of {pagecount}\n')
+                print('Scroll with arrow keys or WS\n')
+
+                keyboard.clear_all_hotkeys()
 
 
 
                 #technically '' is a substring of any string, so we must strip it out to ignore empty cases
-
                 keyboardpress = keyboard.read_key().strip()
+
+
+
+                #due to an odd quirk with how python interacts with stdin buffer and the terminal input
+                #i need to flush the newline created by the enter press
+                #so we dont get a blank input to the command prompt that auto triggers
+                #i cant remove the quirky buffer output tho
+
+                if keyboardpress == 'enter':
+                    input()
+                    break
+
+
+
 
                 if keyboardpress in ('w', 'up') and i >= increment:
                     i -= increment
@@ -294,6 +318,8 @@ def program():
             if vocabulary:
                 vocabulary = None
                 print('List cleared')
+            else:
+                print('No vocab list')
 
 
 
