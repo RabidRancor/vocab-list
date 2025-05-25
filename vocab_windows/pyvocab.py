@@ -15,15 +15,15 @@ def help():
 
     '''displays command menu'''
 
+
     commands = ['Commands:', '(0) Exit', '(1) Help', '(2) Read from json', 
                 '(3) Read from docx', '(4) Write to json', '(5) Show vocab list', 
                 '(6) Add word', '(7) Add example', '(8) Remove word', 
-                '(9) Search by word', '(10) Empty list'
+                '(9) Delete example', '(10) Search by word', '(11) Empty list'
                 ]
 
     for line in commands:
         print(line)
-
 
 
 
@@ -299,8 +299,45 @@ def program():
 
 
 
-        #search for specific word
+        #delete example
         elif command == 9:
+
+            if not vocabulary:
+                print('No vocab list')
+                continue
+
+
+            whatword = input("What word? ")
+
+
+            #if this word is not in the VocabList
+            if not (wordex := vocabulary.search_for_word(whatword)):
+                print('Word not in list')
+                continue
+
+
+            #if the word actually has examples
+            if wordex.examples:
+
+                #print each example out with its index + 1
+                for index, example in enumerate(wordex.examples, start=1):
+                    print(f'[{index}] {example}')
+            
+                
+                userchoice = input("Which example to delete? ")
+                print(vocabulary.delete_example(whatword, userchoice))
+
+
+            else:
+                print('No examples under this word')
+                continue
+
+
+
+
+
+        #search for specific word
+        elif command == 10:
 
             if not vocabulary:
                 print('No vocab list')
@@ -321,7 +358,7 @@ def program():
 
 
         #empties list; debugging feature
-        elif command == 10:
+        elif command == 11:
 
             if vocabulary:
                 vocabulary = None

@@ -25,6 +25,7 @@ class Word:
 
 
 
+
     #allows one to directly convert a dictionary into a Word object
     #useful for converting json to VocabList
     @classmethod
@@ -48,10 +49,20 @@ class Word:
 
 
 
+
     def add_example(self, example: str):
         '''add an example to Word object'''
         
         self.__examples.append(example)
+
+
+
+
+
+    def remove_example(self, choice: int):
+        '''remove an example from a Word object'''
+
+        del self.__examples[choice]
 
     
 
@@ -178,4 +189,28 @@ class VocabList:
 
 
 
+    def delete_example(self, word: str, userinput: str):
+        '''delete example from Word in VocabList'''
 
+
+        #if input is not a integer digit
+        if not (index := userinput.strip()).isdigit():
+            return 'Invalid input'
+        
+
+        index = int(index) - 1
+
+
+        the_word = self.search_for_word(word)
+
+
+        #if the index is valid
+        if index in range(len(the_word.examples)):
+            the_word.remove_example(index)
+            return(f'Deleted example {userinput} from {word}')
+
+
+        else:
+            return('Index out of range')
+
+        
