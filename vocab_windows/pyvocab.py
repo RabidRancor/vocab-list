@@ -182,7 +182,8 @@ def program():
 
                 print('=' * 90)
                 print(f'\n{VocabList(displaylist[i:end_index])}\n')
-                print(f'Page {pagenumber} of {pagecount}\n')
+                print(f'\nPage {pagenumber} of {pagecount}')
+                print(f'Words {i+1} to {end_index}\n')
                 print('Scroll with arrow keys or WS, press ENTER to exit (ignore the buggy output)\n')
 
                 keyboard.clear_all_hotkeys()
@@ -253,14 +254,21 @@ def program():
                 print('No vocab list')
                 continue
 
-
             mainword = input("Example for what word? ")
+            print()
 
             #if word is in list
             if vocabulary.search_for_word(mainword):
 
-                example = input('Example: ')
-                print(vocabulary.add_example(mainword, example))
+                addcount = 0
+
+                #allow user to type examples until they press enter
+                while (example := input('Type the example (blank to stop): ')).strip().replace(' ', ''):
+                    print(vocabulary.add_example(mainword, example), '\n')
+                    addcount += 1
+
+                
+                print(f'{addcount} examples added for {mainword}')
             
             else:
                 print('Word not in list')
