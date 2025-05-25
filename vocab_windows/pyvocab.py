@@ -183,7 +183,7 @@ def program():
                 print('=' * 90)
                 print(f'\n{VocabList(displaylist[i:end_index])}\n')
                 print(f'Page {pagenumber} of {pagecount}\n')
-                print('Scroll with arrow keys or WS\n')
+                print('Scroll with arrow keys or WS, press ENTER to exit (ignore the buggy output)\n')
 
                 keyboard.clear_all_hotkeys()
 
