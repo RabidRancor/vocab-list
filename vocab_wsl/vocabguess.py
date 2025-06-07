@@ -50,7 +50,7 @@ def game():
     )
 
 
-    ollama_response : ChatResponse = chat(model = 'mistral-small:22b', messages = [
+    ollama_response : ChatResponse = chat(model = 'mistral-small:22b-instruct-2409-q5_K_S', messages = [
         {'role': 'user', 'content': startprompt}
     ])
 
@@ -77,7 +77,7 @@ def game():
 
         attempt = input(f'{nextword}: ').strip()
 
-        ollama_determination : ChatResponse = chat(model = 'mistral-small:22b', messages = [
+        ollama_determination : ChatResponse = chat(model = 'mistral-small:22b-instruct-2409-q5_K_S', messages = [
             {'role': 'user', 'content': f'{nextword}:{attempt}'}
         ])
 
